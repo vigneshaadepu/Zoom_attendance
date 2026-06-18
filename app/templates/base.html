@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="EduTrack — Intelligent Student Attendance Management powered by Zoom and ML Analytics" />
+    <title>{% block title %}EduTrack{% endblock %} | EduTrack</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+    <!-- AOS (Animate on Scroll) & SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.css" rel="stylesheet" />
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div class="brand-text">
+            <span class="brand-name">EduTrack</span>
+            <span class="brand-tagline">Attendance AI</span>
+        </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Active Course Indicator -->
+    {% if session.get('active_course_code') %}
+    <div class="px-3 py-1 mb-2">
+        <div class="bg-elevated rounded p-2 d-flex justify-content-between align-items-center border" style="border-color: var(--border-accent) !important;">
+            <div style="min-width: 0; flex: 1;">
+                <span class="d-block text-white fw-bold text-truncate" style="font-size:12px;">{{ session.get('active_course_code') }}</span>
+                <span class="d-block text-muted small text-truncate" style="font-size:10px;">{{ session.get('active_course_name') }}</span>
+            </div>
+            <a href="{{ url_for('courses.clear_course') }}" class="logout-btn ms-2" title="Switch Course" style="width:24px; height:24px;">
+                <i class="bi bi-arrow-left-right" style="font-size: 12px;"></i>
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="px-3 py-1 mb-2">
+        <a href="{{ url_for('courses.list_courses') }}" class="btn-primary-et py-1.5 px-2 text-center w-100 justify-content-center" style="font-size:12px;">
+            <i class="bi bi-mortarboard-fill me-1"></i>Select Class
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="sidebar-divider"></div>
+
+    <ul class="sidebar-nav">
+        <li class="nav-label">MAIN</li>
+        <li>
+            <a href="{{ url_for('courses.list_courses') }}"
+               class="sidebar-link {% if request.blueprint == 'courses' %}active{% endif %}">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span>Courses List</span>
+            </a>
+        </li>
+        {% if session.get('active_course_id') %}
+        <li>
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="sidebar-link {% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li class="nav-label">MANAGEMENT</li>
+        <li>
+            <a href="{{ url_for('students.list_students') }}"
+               class="sidebar-link {% if request.blueprint == 'students' %}active{% endif %}">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('sessions.list_sessions') }}"
+               class="sidebar-link {% if request.blueprint == 'sessions' %}active{% endif %}">
+                <i class="bi bi-camera-video-fill"></i>
+                <span>Sessions</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('students.upload_students') }}"
+               class="sidebar-link {% if request.endpoint == 'students.upload_students' %}active{% endif %}">
+                <i class="bi bi-cloud-upload-fill"></i>
+                <span>Upload Students</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('sessions.upload_csv') }}"
+               class="sidebar-link {% if request.endpoint == 'sessions.upload_csv' %}active{% endif %}">
+                <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                <span>Upload Zoom CSV</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="sidebar-footer">
+        <div class="professor-card">
+            <div class="professor-avatar">
+                {{ current_user.name[0].upper() }}
+            </div>
+            <div class="professor-info">
+                <span class="professor-name">{{ current_user.name }}</span>
+                <span class="professor-dept">{{ current_user.department or 'Professor' }}</span>
+            </div>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn" title="Logout">
+            <i class="bi bi-box-arrow-right"></i>
+        </a>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ MAIN CONTENT -->
+<div class="main-wrapper" id="mainWrapper">
+    <!-- Top bar -->
+    <header class="topbar">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+        <div class="topbar-actions">
+            <form method="POST" action="{{ url_for('students.reset_data') }}" onsubmit="return confirm('Wipe all sessions, attendance history, and students?');" style="display:inline;">
+                <button type="submit" class="btn btn-outline-danger btn-sm me-3">
+                    <i class="bi bi-trash3 me-1"></i>Reset System Data
+                </button>
+            </form>
+            <div class="live-indicator" id="liveIndicator" style="display:none;">
+                <span class="live-dot"></span>
+                <span>LIVE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show flash-alert" role="alert">
+                <i class="bi bi-{% if category == 'success' %}check-circle-fill{% elif category == 'danger' %}x-circle-fill{% elif category == 'warning' %}exclamation-triangle-fill{% else %}info-circle-fill{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Page content -->
+    <main class="page-content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+{% else %}
+<!-- Unauthenticated layout -->
+<div class="auth-wrapper">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container-auth">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    {% block auth_content %}{% endblock %}
+</div>
+{% endif %}
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 and AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<!-- Sidebar Toggle & AOS Init -->
+<script>
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('sidebar');
+const mainWrapper = document.getElementById('mainWrapper');
+
+if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainWrapper.classList.toggle('expanded');
+    });
+}
+
+// Init AOS
+document.addEventListener('DOMContentLoaded', () => {
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true,
+        mirror: false
+    });
+});
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

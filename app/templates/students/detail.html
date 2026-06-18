@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}{{ student.full_name }}{% endblock %}
+{% block page_title %}
+<a href="{{ url_for('students.list_students') }}" class="btn-icon me-3" title="Back to Students">
+    <i class="bi bi-arrow-left"></i>
+</a>
+<i class="bi bi-person-circle me-2 text-accent"></i>Student Profile
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-xl-4">
+        <div class="profile-card">
+            <div class="profile-avatar-lg">{{ student.full_name[0].upper() }}</div>
+            <h4 class="profile-name">{{ student.full_name }}</h4>
+            <p class="profile-email">{{ student.email }}</p>
+            <div class="profile-meta">
+                <span class="course-badge">{{ student.course_code }}</span>
+                <code class="student-id-code ms-2">{{ student.student_id }}</code>
+            </div>
+
+            <div class="profile-stats mt-4">
+                <div class="pstat">
+                    <div class="pstat-value">
+                        {% if student.has_records %}
+                            {{ student.attendance_rate }}%
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                    <div class="pstat-label">Attendance Rate</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-value">{{ records | length }}</div>
+                    <div class="pstat-label">Sessions</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-value">{{ records | selectattr('is_present') | list | length }}</div>
+                    <div class="pstat-label">Present</div>
+                </div>
+            </div>
+
+            <div class="profile-badges mt-3">
+                {% if student.has_records %}
+                    {% if student.attendance_rate < 75.0 %}
+                    <span class="risk-badge risk-high">
+                        <i class="bi bi-shield-exclamation me-1"></i>High Risk
+                    </span>
+                    {% else %}
+                    <span class="risk-badge risk-low">
+                        <i class="bi bi-shield-check me-1"></i>Low Risk
+                    </span>
+                    {% endif %}
+                {% else %}
+                    <span class="risk-badge" style="background: rgba(255,255,255,0.05); color: var(--clr-text-muted);">
+                        <i class="bi bi-shield-slash me-1"></i>No Data
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Mini attendance chart -->
+        <div class="chart-card mt-3">
+            <div class="chart-header">
+                <h6 class="chart-title">Attendance History</h6>
+            </div>
+            <canvas id="studentAttendanceChart" height="150"></canvas>
+        </div>
+    </div>
+
+    <!-- Attendance Records -->
+    <div class="col-xl-8">
+        <div class="data-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title"><i class="bi bi-calendar-check me-2"></i>Session Records</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table etable">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Match</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in records %}
+                        <tr class="{% if r.needs_review %}row-review{% endif %}">
+                            <td>
+                                <a href="{{ url_for('sessions.session_detail', session_id=r.session_id) }}"
+                                   class="table-link">
+                                    {{ r.session.topic | truncate(30) if r.session.topic else 'Session ' ~ r.session_id }}
+                                </a>
+                            </td>
+                            <td class="text-muted small">
+                                {{ r.created_at.strftime('%b %d, %Y') if r.created_at else 'No Date Available' }}
+                            </td>
+                            <td>{{ r.duration_minutes }} min</td>
+                            <td>
+                                {% if r.is_present %}
+                                <span class="status-badge status-present">✓ Present</span>
+                                {% elif r.total_duration_seconds %}
+                                <span class="status-badge status-partial">⚠ Partial</span>
+                                {% else %}
+                                <span class="status-badge status-absent">✗ Absent</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="method-badge method-{{ r.match_method or 'absent' }}">
+                                    {% if r.match_method == 'exact' %}
+                                    Strict Match
+                                    {% elif r.match_method == 'absent' or not r.match_method %}
+                                    Absent
+                                    {% else %}
+                                    {{ r.match_method | title }}
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if r.match_confidence_score %}
+                                    <span class="text-success">
+                                        Strict Perfect Match
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted small">Not matched</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="text-center text-muted py-3">No records yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+async function loadStudentChart() {
+    const resp = await fetch('/api/students/{{ student.id }}/attendance_history');
+    const data = await resp.json();
+    renderStudentMiniChart('studentAttendanceChart', data.labels, data.statuses, data.durations);
+}
+loadStudentChart();
+</script>
+{% endblock %}

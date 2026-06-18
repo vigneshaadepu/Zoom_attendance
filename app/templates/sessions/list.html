@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Sessions{% endblock %}
+{% block page_title %}<i class="bi bi-camera-video-fill me-2 text-accent"></i>Zoom Sessions{% endblock %}
+
+{% block content %}
+<div class="page-toolbar mb-4">
+    <form method="POST" action="{{ url_for('sessions.sync_sessions') }}" style="display:inline;">
+        <button type="submit" class="btn-secondary-et">
+            <i class="bi bi-arrow-clockwise me-2"></i>Sync with Zoom
+        </button>
+    </form>
+</div>
+
+<div class="data-card" data-aos="fade-up">
+    <div class="table-responsive">
+        <table class="table etable">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Duration</th>
+                    <th>Students</th>
+                    <th>Attendance</th>
+                    <th>Status</th>
+                    <th>Report</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in session_data %}
+                {% set s = item.session %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('sessions.session_detail', session_id=s.id) }}" class="table-link">
+                            {{ s.topic or 'Zoom Session' | truncate(35) }}
+                        </a>
+                        <div class="text-muted small">ID: {{ s.meeting_id }}</div>
+                    </td>
+                    <td>
+                        {% if s.course_code %}
+                        <span class="course-badge">{{ s.course_code }}</span>
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="text-muted small">
+                        {{ s.actual_start.strftime('%b %d, %Y %H:%M') if s.actual_start else '—' }}
+                    </td>
+                    <td>{{ s.duration_minutes or '—' }} {% if s.duration_minutes %}min{% endif %}</td>
+                    <td>{{ item.total_students }}</td>
+                    <td>
+                        {% if item.total_students > 0 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="mini-progress" style="width:80px;">
+                                <div class="mini-bar"
+                                     style="width:{{ item.attendance_rate }}%;
+                                            background: {% if item.attendance_rate >= 75 %}var(--clr-success){% elif item.attendance_rate >= 50 %}var(--clr-warning){% else %}var(--clr-danger){% endif %}">
+                                </div>
+                            </div>
+                            <span>{{ item.attendance_rate }}%</span>
+                        </div>
+                        {% else %}—{% endif %}
+                    </td>
+                    <td><span class="badge-status {{ s.status }}">{{ s.status | title }}</span></td>
+                    <td>
+                        {% if s.report %}
+                        <a href="{{ url_for('reports.download_pdf', report_id=s.report.id) }}"
+                           class="btn-icon" title="Download PDF">
+                            <i class="bi bi-file-earmark-pdf text-danger"></i>
+                        </a>
+                        {% if s.report.email_sent %}
+                        <i class="bi bi-envelope-check text-success ms-1" title="Email sent"></i>
+                        {% else %}
+                        <i class="bi bi-envelope-x text-muted ms-1" title="Email not sent"></i>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-muted small">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('sessions.session_detail', session_id=s.id) }}"
+                           class="btn-icon" title="View Detail">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="bi bi-camera-video display-4 text-muted"></i>
+                            <p class="mt-3 text-muted">No sessions yet. Sessions appear automatically when a Zoom meeting starts.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

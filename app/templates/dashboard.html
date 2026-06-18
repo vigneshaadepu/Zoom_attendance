@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}
+<i class="bi bi-grid-1x2-fill me-2 text-accent"></i>Analytics Dashboard
+{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════════ KPI CARDS -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="kpi-body">
+                <div class="kpi-value" id="kpiStudents">{{ total_students }}</div>
+                <div class="kpi-label">Total Students</div>
+            </div>
+            <div class="kpi-trend"><i class="bi bi-mortarboard"></i></div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-purple">
+            <div class="kpi-icon"><i class="bi bi-camera-video-fill"></i></div>
+            <div class="kpi-body">
+                <div class="kpi-value">{{ sessions_this_month }}</div>
+                <div class="kpi-label">Sessions This Month</div>
+            </div>
+            <div class="kpi-trend"><i class="bi bi-calendar-event"></i></div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-green">
+            <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="kpi-body">
+                <div class="kpi-value">{{ avg_attendance }}%</div>
+                <div class="kpi-label">Avg Attendance Rate</div>
+            </div>
+            <div class="kpi-trend"><i class="bi bi-bar-chart-fill"></i></div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="kpi-card kpi-red">
+            <div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <div class="kpi-body">
+                <div class="kpi-value" id="kpiRisk">{{ high_risk_count }}</div>
+                <div class="kpi-label">Students At Risk</div>
+            </div>
+            <div class="kpi-trend"><i class="bi bi-shield-exclamation"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════ LIVE SESSION PANEL -->
+{% if live_session %}
+<div class="live-panel mb-4" id="livePanel">
+    <div class="live-header">
+        <div class="live-badge-large">
+            <span class="live-pulse"></span>
+            <span>LIVE</span>
+        </div>
+        <div class="live-info">
+            <span class="live-title">{{ live_session.topic or 'Active Session' }}</span>
+            <span class="live-meta">Meeting ID: {{ live_session.meeting_id }}</span>
+        </div>
+    </div>
+    <div class="live-stats">
+        <div class="live-stat">
+            <span class="live-stat-value" id="liveParticipants">—</span>
+            <span class="live-stat-label">Participants</span>
+        </div>
+        <div class="live-stat">
+            <span class="live-stat-value" id="liveDuration">—</span>
+            <span class="live-stat-label">Duration</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ═══════════════════════════════════ CHARTS ROW -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h6 class="chart-title"><i class="bi bi-graph-up me-2"></i>Attendance Trend</h6>
+                <div class="chart-controls">
+                    <select class="form-select form-select-sm" id="courseTrendFilter" style="width:auto;">
+                        <option value="">All Courses</option>
+                    </select>
+                    <select class="form-select form-select-sm ms-2" id="daysTrendFilter" style="width:auto;">
+                        <option value="30">Last 30 days</option>
+                        <option value="60">Last 60 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                </div>
+            </div>
+            <div class="chart-body">
+                <canvas id="trendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h6 class="chart-title"><i class="bi bi-pie-chart-fill me-2"></i>Last Session Breakdown</h6>
+            </div>
+            <div class="chart-body">
+                <canvas id="pieChart" height="200"></canvas>
+                <div class="pie-legend" id="pieLegend"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-12">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h6 class="chart-title"><i class="bi bi-bar-chart-fill me-2"></i>Per-Student Attendance Rate</h6>
+            </div>
+            <div class="chart-body">
+                <canvas id="barChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Heatmap -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h6 class="chart-title"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Attendance Heatmap</h6>
+                <span class="chart-subtitle text-muted">Student × Session (🟢 Present, 🔴 Absent, 🟡 Partial)</span>
+            </div>
+            <div class="chart-body overflow-auto">
+                <div id="heatmapContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════ TABLES ROW -->
+<div class="row g-4">
+    <!-- Recent Sessions -->
+    <div class="col-xl-6">
+        <div class="data-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title"><i class="bi bi-camera-video me-2"></i>Recent Sessions</h6>
+                <a href="{{ url_for('sessions.list_sessions') }}" class="btn-link-sm">View All →</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table etable">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>Date</th>
+                            <th>Attendance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in recent_sessions %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('sessions.session_detail', session_id=s.id) }}" class="table-link">
+                                    {{ s.topic or 'Zoom Session' | truncate(30) }}
+                                </a>
+                            </td>
+                            <td class="text-muted small">
+                                {{ s.actual_start.strftime('%b %d, %Y') if s.actual_start else '—' }}
+                            </td>
+                            <td>
+                                {% set rate = s.attendance_percentage %}
+                                <div class="mini-progress">
+                                    <div class="mini-bar"
+                                         style="width:{{ rate }}%;
+                                                background: {% if rate >= 75 %}var(--clr-success){% elif rate >= 50 %}var(--clr-warning){% else %}var(--clr-danger){% endif %}">
+                                    </div>
+                                </div>
+                                <span class="small">{{ rate }}%</span>
+                            </td>
+                            <td>
+                                <span class="badge-status {{ s.status }}">{{ s.status | title }}</span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-center text-muted py-3">No sessions yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- At-Risk Students -->
+    <div class="col-xl-6">
+        <div class="data-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>At-Risk Students</h6>
+                <a href="{{ url_for('students.list_students') }}" class="btn-link-sm">View All →</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table etable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Attendance</th>
+                            <th>Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in at_risk_students %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('students.student_detail', student_id=s.id) }}" class="table-link">
+                                    {{ s.full_name }}
+                                </a>
+                            </td>
+                            <td><span class="course-badge">{{ s.course_code }}</span></td>
+                            <td>{{ s.attendance_rate }}%</td>
+                            <td>
+                                <span class="risk-badge risk-{{ s.risk_label or 'low' }}">
+                                    {{ (s.risk_label or 'low') | title }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-center text-muted py-3">
+                            <i class="bi bi-check-circle text-success me-1"></i>No at-risk students!
+                        </td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unmatched Participants -->
+    {% if unmatched_records %}
+    <div class="col-12">
+        <div class="data-card review-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title">
+                    <i class="bi bi-question-circle-fill me-2 text-warning"></i>
+                    Unmatched Participants — Needs Your Review
+                    <span class="badge bg-warning text-dark ms-2">{{ unmatched_records | length }}</span>
+                </h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table etable">
+                    <thead>
+                        <tr>
+                            <th>Zoom Name</th>
+                            <th>Zoom Email</th>
+                            <th>Session</th>
+                            <th>Duration</th>
+                            <th>Confidence</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in unmatched_records %}
+                        <tr id="reviewRow{{ r.id }}">
+                            <td><strong>{{ r.zoom_display_name or '—' }}</strong></td>
+                            <td class="text-muted">{{ r.zoom_email or '—' }}</td>
+                            <td>
+                                <a href="{{ url_for('sessions.session_detail', session_id=r.session_id) }}" class="table-link">
+                                    {{ r.session.topic | truncate(25) if r.session.topic else 'Session ' ~ r.session_id }}
+                                </a>
+                            </td>
+                            <td>{{ r.duration_minutes }} min</td>
+                            <td>
+                                <span class="confidence-bar"
+                                      title="{{ '%.0f'|format(r.match_confidence_score * 100) }}%">
+                                    <span style="width:{{ (r.match_confidence_score or 0) * 100 }}%"></span>
+                                </span>
+                                {{ '%.0f'|format((r.match_confidence_score or 0) * 100) }}%
+                            </td>
+                            <td>
+                                {% if r.student %}
+                                <div class="review-actions">
+                                    <span class="text-muted small">Suggested: <b>{{ r.student.full_name }}</b></span>
+                                    <button class="btn-confirm" onclick="confirmMatch({{ r.id }}, {{ r.student.id }}, '{{ r.zoom_display_name }}', '{{ r.zoom_email }}', true)">
+                                        <i class="bi bi-check-lg"></i> Confirm
+                                    </button>
+                                    <button class="btn-reject" onclick="confirmMatch({{ r.id }}, {{ r.student.id }}, '{{ r.zoom_display_name }}', '{{ r.zoom_email }}', false)">
+                                        <i class="bi bi-x-lg"></i> Reject
+                                    </button>
+                                </div>
+                                {% else %}
+                                <span class="text-muted small">No suggestion</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+// Pass server data to JS
+const DASHBOARD_DATA = {
+    chartLabels: {{ chart_labels | tojson }},
+    chartRates:  {{ chart_rates  | tojson }},
+    liveSessionId: {{ live_session.id if live_session else 'null' }},
+};
+</script>
+{% endblock %}

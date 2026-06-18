@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Upload Students{% endblock %}
+{% block page_title %}<i class="bi bi-cloud-upload-fill me-2 text-accent"></i>Upload Student List{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-8">
+
+        {% if upload_done %}
+        <!-- Upload Result -->
+        <div class="upload-result-card">
+            <div class="upload-result-icon">
+                {% if errors %}
+                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                {% else %}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {% endif %}
+            </div>
+            <h4 class="upload-result-title">Upload Complete</h4>
+
+            <div class="row g-3 mt-2 mb-4">
+                <div class="col-4">
+                    <div class="result-stat result-added">
+                        <div class="result-value">{{ added }}</div>
+                        <div class="result-label">Added</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="result-stat result-skipped">
+                        <div class="result-value">{{ duplicates }}</div>
+                        <div class="result-label">Duplicates Skipped</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="result-stat result-errors">
+                        <div class="result-value">{{ errors | length }}</div>
+                        <div class="result-label">Errors</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if errors %}
+            <div class="error-list">
+                <h6 class="text-warning mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Errors Found:</h6>
+                {% for error in errors %}
+                <div class="error-item">
+                    <i class="bi bi-x-circle text-danger me-2"></i>{{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mt-4 d-flex gap-3 justify-content-center">
+                <a href="{{ url_for('students.upload_students') }}" class="btn-primary-et">
+                    <i class="bi bi-cloud-upload me-2"></i>Upload Another
+                </a>
+                <a href="{{ url_for('students.list_students') }}" class="btn-secondary-et">
+                    <i class="bi bi-people me-2"></i>View Students
+                </a>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Upload Form -->
+        <div class="data-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title">Upload Excel Student Roster</h6>
+            </div>
+            <div class="p-4">
+                <div class="upload-requirements mb-4">
+                    <h6 class="text-muted mb-2"><i class="bi bi-info-circle me-2"></i>Required Excel Columns:</h6>
+                    <div class="required-cols">
+                        <span class="col-badge"><i class="bi bi-person me-1"></i>Full Name</span>
+                        <span class="col-badge"><i class="bi bi-envelope me-1"></i>Email</span>
+                        <span class="col-badge"><i class="bi bi-card-text me-1"></i>Student ID</span>
+                    </div>
+                    <p class="text-muted small mt-2">
+                        The first row should be column headers. All 3 columns are required.
+                        Duplicate student emails will be skipped.
+                    </p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="upload-dropzone" id="dropzone">
+                        <div class="dropzone-content">
+                            <i class="bi bi-file-earmark-spreadsheet-fill dropzone-icon"></i>
+                            <p class="dropzone-text">Drag & drop your Excel file here</p>
+                            <p class="dropzone-sub">or</p>
+                            <label for="fileInput" class="btn-primary-et cursor-pointer">
+                                <i class="bi bi-folder2-open me-2"></i>Browse Files
+                            </label>
+                            <input type="file" id="fileInput" name="file"
+                                   accept=".xlsx,.xls" class="d-none" required />
+                        </div>
+                        <div class="dropzone-selected d-none" id="selectedFile">
+                            <i class="bi bi-file-earmark-check-fill text-success me-2"></i>
+                            <span id="selectedFileName"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn-primary-et w-100" id="uploadBtn" disabled>
+                            <span class="btn-text"><i class="bi bi-upload me-2"></i>Upload & Process</span>
+                            <span class="btn-spinner spinner-border spinner-border-sm d-none"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const fileInput = document.getElementById('fileInput');
+const dropzone = document.getElementById('dropzone');
+const selectedFile = document.getElementById('selectedFile');
+const selectedFileName = document.getElementById('selectedFileName');
+const uploadBtn = document.getElementById('uploadBtn');
+
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            selectedFileName.textContent = this.files[0].name;
+            selectedFile.classList.remove('d-none');
+            dropzone.querySelector('.dropzone-content').classList.add('d-none');
+            if (uploadBtn) uploadBtn.disabled = false;
+        }
+    });
+
+    // Drag & drop
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    document.getElementById('uploadForm')?.addEventListener('submit', function() {
+        uploadBtn.querySelector('.btn-text').classList.add('d-none');
+        uploadBtn.querySelector('.btn-spinner').classList.remove('d-none');
+        uploadBtn.disabled = true;
+    });
+}
+</script>
+{% endblock %}

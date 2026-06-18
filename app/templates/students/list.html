@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block page_title %}<i class="bi bi-people-fill me-2 text-accent"></i>Students{% endblock %}
+
+{% block content %}
+<div class="page-toolbar mb-4">
+    <div class="d-flex gap-3 align-items-center flex-wrap w-100">
+        <!-- Interactive Status Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-student-filter="all" onclick="setStudentTab('all')">All Students</button>
+            <button class="filter-tab" data-student-filter="above" onclick="setStudentTab('above')">Above 75% Attendance</button>
+            <button class="filter-tab" data-student-filter="low" onclick="setStudentTab('low')">Below 75% Attendance</button>
+        </div>
+        
+        <div class="ms-auto d-flex gap-2">
+            <a href="{{ url_for('students.export_students_csv') }}" class="btn-secondary-et">
+                <i class="bi bi-download me-2"></i>Download CSV
+            </a>
+            <a href="{{ url_for('students.upload_students') }}" class="btn-primary-et">
+                <i class="bi bi-cloud-upload me-2"></i>Upload Excel Roster
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="data-card" data-aos="fade-up">
+    <div class="table-responsive">
+        <table class="table etable" id="studentsTable">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Student ID</th>
+                    <th>Course</th>
+                    <th>Attendance</th>
+                    <th>Attendance Risk</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                {% set rate = s.attendance_rate if s.has_records else 0 %}
+                <tr class="student-list-row" data-attendance-rate="{{ rate }}" data-has-records="{{ 'true' if s.has_records else 'false' }}" data-risk="{{ s.risk_label or 'low' }}">
+                    <td>
+                        <div class="student-row">
+                            <div class="student-avatar">{{ s.full_name[0].upper() }}</div>
+                            <div>
+                                <a href="{{ url_for('students.student_detail', student_id=s.id) }}"
+                                   class="table-link student-name-cell">{{ s.full_name }}</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-muted student-email-cell">{{ s.email }}</td>
+                    <td><code class="student-id-code">{{ s.student_id }}</code></td>
+                    <td><span class="course-badge">{{ s.course_code }}</span></td>
+                    <td>
+                        {% if s.has_records %}
+                            {% set rate = s.attendance_rate %}
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="mini-progress flex-grow-1">
+                                    <div class="mini-bar"
+                                         style="width:{{ rate }}%;
+                                                background: {% if rate >= 75 %}var(--clr-success){% elif rate >= 50 %}var(--clr-warning){% else %}var(--clr-danger){% endif %}">
+                                    </div>
+                                </div>
+                                <span class="small">{{ rate }}%</span>
+                            </div>
+                        {% else %}
+                            <span class="text-muted small">No sessions yet</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if s.has_records %}
+                            {% set rate = s.attendance_rate %}
+                            {% if rate < 75.0 %}
+                            <span class="risk-badge risk-high">
+                                High Risk
+                            </span>
+                            {% else %}
+                            <span class="risk-badge risk-low">
+                                Low Risk
+                            </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="risk-badge" style="background: rgba(255,255,255,0.05); color: var(--clr-text-muted);">
+                                No Data
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('students.student_detail', student_id=s.id) }}"
+                           class="btn-icon" title="View Detail">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="bi bi-people display-4 text-muted"></i>
+                            <p class="mt-3 text-muted">No students registered yet.</p>
+                            <a href="{{ url_for('students.upload_students') }}" class="btn-primary-et">
+                                <i class="bi bi-cloud-upload me-2"></i>Upload Student List
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentTab = 'all';
+
+function setStudentTab(tabName) {
+    currentTab = tabName;
+    document.querySelectorAll('[data-student-filter]').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-student-filter="${tabName}"]`).classList.add('active');
+    filterStudents();
+}
+
+function filterStudents() {
+    document.querySelectorAll('.student-list-row').forEach(row => {
+        const rate = parseFloat(row.getAttribute('data-attendance-rate') || '0');
+        const hasRecords = row.getAttribute('data-has-records') === 'true';
+        
+        // Match Tab Filter
+        let matchesTab = false;
+        if (currentTab === 'all') {
+            matchesTab = true;
+        } else if (currentTab === 'above') {
+            matchesTab = hasRecords && (rate >= 75.0);
+        } else if (currentTab === 'low') {
+            matchesTab = hasRecords && (rate < 75.0);
+        }
+        
+        if (matchesTab) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

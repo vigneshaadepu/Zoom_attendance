@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}{{ session.topic or 'Session Detail' }}{% endblock %}
+{% block page_title %}
+<a href="{{ url_for('sessions.list_sessions') }}" class="btn-icon me-3" title="Back to Sessions">
+    <i class="bi bi-arrow-left"></i>
+</a>
+<i class="bi bi-camera-video me-2 text-accent"></i>Session Detail
+{% endblock %}
+
+{% block content %}
+<!-- Session Header -->
+<div class="session-header-card mb-4">
+    <div class="row g-3 align-items-center">
+        <!-- Left info -->
+        <div class="col-xl-5">
+            <h4 class="session-topic">{{ session.topic or 'Zoom Session' }}</h4>
+            <div class="session-meta">
+                <span><i class="bi bi-hash me-1"></i>{{ session.meeting_id }}</span>
+                {% if session.course_code %}
+                <span class="ms-3"><i class="bi bi-book me-1"></i>{{ session.course_code }}</span>
+                {% endif %}
+                <span class="ms-3"><i class="bi bi-person me-1"></i>{{ session.professor.name }}</span>
+            </div>
+        </div>
+        <!-- Center time row -->
+        <div class="col-xl-5">
+            <div class="session-time-row justify-content-center">
+                <div class="time-block">
+                    <span class="time-label">Started</span>
+                    <span class="time-value">{{ session.actual_start.strftime('%b %d, %Y %H:%M') if session.actual_start else '—' }}</span>
+                </div>
+                <div class="time-arrow"><i class="bi bi-arrow-right"></i></div>
+                <div class="time-block">
+                    <span class="time-label">Ended</span>
+                    <span class="time-value">{{ session.actual_end.strftime('%H:%M') if session.actual_end else '—' }}</span>
+                </div>
+                <div class="time-block ms-3">
+                    <span class="time-label">Duration</span>
+                    <span class="time-value">{{ session.duration_minutes or '—' }} min</span>
+                </div>
+                <span class="badge-status {{ session.status }} ms-3">{{ session.status | title }}</span>
+            </div>
+        </div>
+        <!-- Right actions -->
+        <div class="col-xl-2 text-end">
+            {% if session.report %}
+            <div class="d-flex flex-column gap-2 align-items-end">
+                <a href="{{ url_for('reports.download_pdf', report_id=session.report.id) }}"
+                   class="btn-primary-et py-1 px-2 text-nowrap text-center w-100" style="font-size: 12px; max-width: 160px;">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF Report
+                </a>
+                {% if not session.report.email_sent %}
+                <form method="POST" action="{{ url_for('reports.resend_report', report_id=session.report.id) }}" style="display:inline; margin:0; width:100%; max-width: 160px;">
+                    <button type="submit" class="btn-secondary-et py-1 px-2 text-nowrap w-100 text-center" style="font-size: 12px;">
+                        <i class="bi bi-envelope me-1"></i>Send Email Report
+                    </button>
+                </form>
+                {% else %}
+                <span class="text-success text-nowrap text-center small w-100" style="max-width: 160px;">
+                    <i class="bi bi-envelope-check me-1"></i>Email Sent
+                </span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-mini stat-total">
+            <div class="stat-mini-value">{{ records | length }}</div>
+            <div class="stat-mini-label">Total Students</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-mini stat-present">
+            <div class="stat-mini-value">{{ present_count }}</div>
+            <div class="stat-mini-label">Present</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-mini stat-partial">
+            <div class="stat-mini-value">{{ partial_count }}</div>
+            <div class="stat-mini-label">Partial</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-mini stat-absent">
+            <div class="stat-mini-value">{{ absent_count }}</div>
+            <div class="stat-mini-label">Absent</div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Table -->
+<div class="data-card">
+    <div class="data-card-header">
+        <h6 class="data-card-title"><i class="bi bi-clipboard-check me-2"></i>Attendance Records</h6>
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all" onclick="filterRows('all')">All</button>
+            <button class="filter-tab" data-filter="present" onclick="filterRows('present')">Present</button>
+            <button class="filter-tab" data-filter="partial" onclick="filterRows('partial')">Partial</button>
+            <button class="filter-tab" data-filter="absent" onclick="filterRows('absent')">Absent</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table etable" id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Student ID</th>
+                    <th>Zoom Name</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Match Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in records %}
+                <tr class="att-row {% if r.is_present %}row-present{% elif r.total_duration_seconds %}row-partial{% else %}row-absent{% endif %}
+                            {% if r.needs_review %}row-review{% endif %}">
+                    <td>
+                        <a href="{{ url_for('students.student_detail', student_id=r.student_id) }}"
+                           class="table-link">
+                            {{ r.student.full_name if r.student else 'Unregistered Attendee' }}
+                        </a>
+                    </td>
+                    <td><code class="student-id-code">{{ r.student.student_id if r.student else 'No ID' }}</code></td>
+                    <td>
+                        {% if r.zoom_display_name %}
+                            <span class="text-muted">{{ r.zoom_display_name }}</span>
+                        {% else %}
+                            <span class="text-danger small fw-semibold">Did not join Zoom</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ r.duration_minutes }} min</td>
+                    <td>
+                        {% if r.is_present %}
+                        <span class="status-badge status-present">✓ Present</span>
+                        {% elif r.total_duration_seconds %}
+                        <span class="status-badge status-partial">⚠ Partial</span>
+                        {% else %}
+                        <span class="status-badge status-absent">✗ Absent</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="method-badge method-{{ r.match_method or 'absent' }}">
+                            {% if r.match_method == 'exact' %}
+                            Strict Match
+                            {% elif r.match_method == 'absent' or not r.match_method %}
+                            Absent
+                            {% else %}
+                            {{ r.match_method | title }}
+                            {% endif %}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-3">No records yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterRows(status) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-filter="${status}"]`).classList.add('active');
+    document.querySelectorAll('.att-row').forEach(row => {
+        if (status === 'all' || row.classList.contains('row-' + status)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

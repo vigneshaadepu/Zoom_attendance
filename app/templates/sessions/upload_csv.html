@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Upload Zoom CSV{% endblock %}
+{% block page_title %}<i class="bi bi-file-earmark-arrow-up-fill me-2 text-accent"></i>Upload Zoom Participant CSV{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-8">
+
+        {% if upload_done %}
+        <div class="upload-result-card">
+            <div class="upload-result-icon">
+                {% if errors %}
+                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                {% else %}
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {% endif %}
+            </div>
+            <h4 class="upload-result-title">Attendance Processed</h4>
+            <p class="text-muted mt-2">The Zoom participant list has been parsed and matched against your student roster.</p>
+
+            <div class="row g-3 mt-3 mb-4">
+                <div class="col-4">
+                    <div class="result-stat result-added">
+                        <div class="result-value">{{ present }}</div>
+                        <div class="result-label">Present</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="result-stat result-skipped">
+                        <div class="result-value">{{ partial }}</div>
+                        <div class="result-label">Partial</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="result-stat result-errors">
+                        <div class="result-value">{{ absent }}</div>
+                        <div class="result-label">Absent</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if errors %}
+            <div class="error-list">
+                <h6 class="text-warning mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Errors or Warnings:</h6>
+                {% for error in errors %}
+                <div class="error-item">
+                    <i class="bi bi-x-circle text-danger me-2"></i>{{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mt-4 d-flex gap-3 justify-content-center">
+                <a href="{{ url_for('sessions.session_detail', session_id=session_id) }}" class="btn-primary-et">
+                    <i class="bi bi-eye me-2"></i>View Attendance details
+                </a>
+                <a href="{{ url_for('sessions.upload_csv') }}" class="btn-secondary-et">
+                    <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload Another
+                </a>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="data-card">
+            <div class="data-card-header">
+                <h6 class="data-card-title">Upload Zoom Participant Export (.csv)</h6>
+            </div>
+            <div class="p-4">
+                <div class="upload-requirements mb-4">
+                    <h6 class="text-muted mb-2"><i class="bi bi-info-circle me-2"></i>Expected Zoom CSV Headers:</h6>
+                    <div class="required-cols mb-3">
+                        <span class="col-badge"><i class="bi bi-person me-1"></i>Name (Original Name)</span>
+                        <span class="col-badge"><i class="bi bi-envelope me-1"></i>User Email</span>
+                        <span class="col-badge"><i class="bi bi-clock me-1"></i>Join Time</span>
+                        <span class="col-badge"><i class="bi bi-clock-history me-1"></i>Leave Time</span>
+                        <span class="col-badge"><i class="bi bi-hourglass-split me-1"></i>Duration (Minutes)</span>
+                    </div>
+                    <p class="text-muted small">
+                        This is the CSV report exported directly from the Zoom web portal (Meetings -> Reports -> Participant Report).
+                        The app will automatically match these participants with your registered student roster.
+                    </p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+
+
+
+
+                    <div class="upload-dropzone" id="dropzone">
+                        <div class="dropzone-content">
+                            <i class="bi bi-file-earmark-arrow-up-fill dropzone-icon"></i>
+                            <p class="dropzone-text">Drag & drop your Zoom Participant CSV file here</p>
+                            <p class="dropzone-sub">or</p>
+                            <label for="fileInput" class="btn-primary-et cursor-pointer">
+                                <i class="bi bi-folder2-open me-2"></i>Browse Files
+                            </label>
+                            <input type="file" id="fileInput" name="file" accept=".csv" class="d-none" required />
+                        </div>
+                        <div class="dropzone-selected d-none" id="selectedFile">
+                            <i class="bi bi-file-earmark-check-fill text-success me-2"></i>
+                            <span id="selectedFileName"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn-primary-et w-100" id="uploadBtn" disabled>
+                            <span class="btn-text"><i class="bi bi-upload me-2"></i>Upload & Compute Attendance</span>
+                            <span class="btn-spinner spinner-border spinner-border-sm d-none"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const fileInput = document.getElementById('fileInput');
+const dropzone = document.getElementById('dropzone');
+const selectedFile = document.getElementById('selectedFile');
+const selectedFileName = document.getElementById('selectedFileName');
+const uploadBtn = document.getElementById('uploadBtn');
+
+if (fileInput) {
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            selectedFileName.textContent = this.files[0].name;
+            selectedFile.classList.remove('d-none');
+            dropzone.querySelector('.dropzone-content').classList.add('d-none');
+            if (uploadBtn) uploadBtn.disabled = false;
+        }
+    });
+
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    document.getElementById('uploadForm')?.addEventListener('submit', function() {
+        uploadBtn.querySelector('.btn-text').classList.add('d-none');
+        uploadBtn.querySelector('.btn-spinner').classList.remove('d-none');
+        uploadBtn.disabled = true;
+    });
+}
+</script>
+{% endblock %}
