@@ -1,31 +1,31 @@
 <div align="center">
 
-  <h1>🎓 EduTrack</h1>
-  <p><b>Enterprise-Grade Student Attendance Engine & ML Analytics Platform</b></p>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e293b,100:0f172a&height=200&section=header&text=🎓%20EduTrack&fontSize=48&fontColor=38bdf8&fontAlignY=38&desc=Enterprise-Grade%20Student%20Attendance%20Engine%20%26%20ML%20Analytics&descSize=18&descAlignY=62&descAlign=50" width="100%"/>
 
-  <p><i>Automated Zoom Webhook Processing • 3-Layer Machine Learning Matcher • Behavioral Risk Analytics • Automated PDF Reporting</i></p>
+  <br/>
 
   <p>
-    <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-    <img src="https://img.shields.io/badge/Flask-3.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask">
-    <img src="https://img.shields.io/badge/scikit--learn-RandomForest-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="scikit-learn">
-    <img src="https://img.shields.io/badge/Celery-Async_Tasks-37B24D?style=for-the-badge&logo=celery&logoColor=white" alt="Celery">
-    <img src="https://img.shields.io/badge/Redis-7.x-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
-    <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+    <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
+    <a href="https://flask.palletsprojects.com"><img src="https://img.shields.io/badge/Flask-3.x-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"/></a>
+    <a href="https://scikit-learn.org"><img src="https://img.shields.io/badge/scikit--learn-RandomForest-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="scikit-learn"/></a>
+    <a href="https://docs.celeryq.dev"><img src="https://img.shields.io/badge/Celery-Async_Queue-37B24D?style=for-the-badge&logo=celery&logoColor=white" alt="Celery"/></a>
+    <a href="https://redis.io"><img src="https://img.shields.io/badge/Redis-7.x-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis"/></a>
+    <a href="https://docker.com"><img src="https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/></a>
   </p>
 
   <p>
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=18&pause=1000&color=3B82F6&center=true&vcenter=true&width=550&lines=Automated+Zoom+Webhook+Ingestion;3-Layer+ML+Student+Name+Matching;Active+Learning+%26+Nightly+Model+Retraining;Predictive+Risk+%26+Behavioral+Clustering" alt="Capabilities Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=17&pause=1000&color=38BDF8&center=true&vcenter=true&width=580&lines=Automated+Zoom+Server-to-Server+Webhooks;3-Layer+Machine+Learning+Name+Matcher;Active+Learning+%26+Automated+Nightly+Retraining;Real-time+Behavioral+Risk+%26+Attendance+Clustering" alt="Typing Banner" />
   </p>
 
+  <br/>
+
   <p>
-    <a href="#-executive-overview">Overview</a> •
-    <a href="#-key-features">Features</a> •
-    <a href="#-system-architecture">Architecture</a> •
-    <a href="#-ml--analytics-engine">ML Engine</a> •
-    <a href="#-tech-stack">Tech Stack</a> •
-    <a href="#-quick-start">Quick Start</a> •
-    <a href="#-zoom-integration">Zoom Setup</a>
+    <a href="#-executive-overview"><img src="https://img.shields.io/badge/📖_Overview-1E293B?style=for-the-badge&logoColor=white"/></a>
+    <a href="#-flagship-capabilities"><img src="https://img.shields.io/badge/✨_Features-1E293B?style=for-the-badge&logoColor=white"/></a>
+    <a href="#-system-architecture"><img src="https://img.shields.io/badge/🏛️_Architecture-1E293B?style=for-the-badge&logoColor=white"/></a>
+    <a href="#-ml--matching-pipeline"><img src="https://img.shields.io/badge/🤖_ML_Engine-1E293B?style=for-the-badge&logoColor=white"/></a>
+    <a href="#-technology-stack-matrix"><img src="https://img.shields.io/badge/🛠️_Tech_Stack-1E293B?style=for-the-badge&logoColor=white"/></a>
+    <a href="#-quick-start--installation"><img src="https://img.shields.io/badge/🚀_Quick_Start-1E293B?style=for-the-badge&logoColor=white"/></a>
   </p>
 
 </div>
@@ -34,37 +34,64 @@
 
 ## ⚡ Executive Overview
 
-**EduTrack** transforms academic attendance tracking by bridging real-time video conferencing telemetries with machine learning precision. By capturing Zoom Server-to-Server webhooks, executing multi-tiered participant identification, and evaluating predictive risk metrics, EduTrack transitions attendance management from manual verification into an automated, zero-touch operational pipeline.
+> [!IMPORTANT]  
+> **EduTrack** replaces error-prone manual attendance taking with an enterprise-grade, event-driven pipeline. By seamlessly capturing real-time Zoom telemetries, running multi-stage machine learning identity resolution, and generating predictive risk analytics, EduTrack turns raw meeting events into actionable academic intelligence.
 
-| Traditional Manual Tracking | EduTrack Automated Intelligence |
-| :--- | :--- |
-| ❌ Manual roster cross-referencing & high error margin | ✅ **Automated 3-layer ML name matching** (Exact + Fuzzy + ML) |
-| ❌ Single join-time capture ignores mid-meeting drops | ✅ **Cumulative active duration calculation** across re-joins |
-| ❌ Delayed insight into chronic absenteeism | ✅ **Real-time student risk scoring & behavioral clustering** |
-| ❌ Manual administrative report compile workflows | ✅ **Instant automated PDF report generation & SMTP distribution** |
+<table width="100%">
+  <tr>
+    <th width="50%" align="center">❌ Traditional Manual Tracking</th>
+    <th width="50%" align="center">✅ EduTrack Intelligent Engine</th>
+  </tr>
+  <tr>
+    <td>
+      • Manual roster cross-referencing with high error margin<br/>
+      • Single join-time snapshot ignores mid-session drops<br/>
+      • Delayed visibility into student absenteeism trends<br/>
+      • Labor-intensive administrative report compilation
+    </td>
+    <td>
+      • <b>3-Layer ML Name Matcher</b> (Exact + Fuzzy + RandomForest)<br/>
+      • <b>Cumulative duration tracking</b> across leave/re-join events<br/>
+      • <b>Real-time student risk scoring & behavioral clustering</b><br/>
+      • <b>Automated PDF generation & scheduled SMTP dispatch</b>
+    </td>
+  </tr>
+</table>
 
 ---
 
-## ✨ Key Features
+## ✨ Flagship Capabilities
 
-### 📡 Real-Time Zoom Webhook Engine
-- Ingests Zoom lifecycle webhooks (`meeting.started`, `meeting.ended`, `participant_joined`, `participant_left`).
-- Features a built-in event-driven state machine managing participant leave/re-join sequences to accurately accumulate active attendance duration against configurable thresholds.
-
-### 🤖 3-Layer Machine Learning Matcher
-- Resolves Zoom display names to official course rosters through a cascading pipeline: **Exact String Match** $\rightarrow$ **Fuzzy Levenshtein Distance** $\rightarrow$ **Pre-Trained RandomForest Classifier** (trained on 10,000 synthetic pairs; $\ge$90% target accuracy).
-- Integrates a human-in-the-loop active feedback system: professor adjustments are captured to `confirmed_pairs.jsonl` for automated nightly retraining via Celery Beat.
-
-### 📊 Predictive Risk & Behavioral Analytics
-- Dynamically calculates student attendance risk profiles and behavioral clusters (`High Risk`, `Moderate Risk`, `Consistent`).
-- Powers an interactive administrative dashboard equipped with Chart.js REST endpoints and Excel (`.xlsx`) bulk roster import capabilities.
-
-### ⚙️ Asynchronous Task & Report Pipeline
-- Decouples long-running operations via a Celery & Redis task architecture.
-- Generates post-session PDF performance summaries using ReportLab and dispatches automated notifications via SMTP.
-
-### 🛡️ Enterprise Security & Signature Verification
-- Enforces strict security standards using HMAC-SHA256 signature verification for Zoom webhooks, 5-minute replay attack protection windows, Werkzeug bcrypt password hashing, and database transaction rollback safety.
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>📡 Real-Time Webhook Engine</h3>
+      <img src="https://img.shields.io/badge/Ingestion-Event--Driven-0284C7?style=flat-square"/>
+      <br/><br/>
+      Captures Zoom lifecycle events (<code>started</code>, <code>ended</code>, <code>joined</code>, <code>left</code>). Uses an event-driven state machine to handle participant drops and re-joins, accurately accumulating active presence duration.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🤖 3-Layer ML Name Matcher</h3>
+      <img src="https://img.shields.io/badge/Accuracy-%E2%89%A590%25-16A34A?style=flat-square"/>
+      <br/><br/>
+      Cascading resolution pipeline: <b>Exact Match</b> $\rightarrow$ <b>Fuzzy Levenshtein</b> $\rightarrow$ <b>RandomForest Classifier</b> (10k synthetic pairs). Features human-in-the-loop active feedback logged to <code>confirmed_pairs.jsonl</code>.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>📊 Risk & Behavioral Analytics</h3>
+      <img src="https://img.shields.io/badge/Analytics-Predictive-7C3AED?style=flat-square"/>
+      <br/><br/>
+      Calculates real-time risk scores and groups students into behavioral clusters (<i>High Risk</i>, <i>Moderate Risk</i>, <i>Consistent</i>). Powered by Chart.js REST endpoints and bulk Excel (<code>.xlsx</code>) imports.
+    </td>
+    <td width="50%" valign="top">
+      <h3>⚙️ Async Pipeline & PDF Engine</h3>
+      <img src="https://img.shields.io/badge/Task_Queue-Celery_%2B_Redis-EA580C?style=flat-square"/>
+      <br/><br/>
+      Offloads heavy post-session workflows via Celery workers. Compiles professional ReportLab PDF reports and automatically emails summaries via SMTP.
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -72,83 +99,83 @@
 
 ```mermaid
 graph TD
-    subgraph External System
-        Z[Zoom API / Event Subscription]
-    end
+    classDef external fill:#1e293b,stroke:#0284c7,stroke-width:2px,color:#fff;
+    classDef security fill:#0f172a,stroke:#eab308,stroke-width:2px,color:#fff;
+    classDef async fill:#0f172a,stroke:#16a34a,stroke-width:2px,color:#fff;
+    classDef analytics fill:#0f172a,stroke:#9333ea,stroke-width:2px,color:#fff;
 
-    subgraph Security & Ingestion Layer
-        B[Flask Webhook Gateway]
-        V[HMAC-SHA256 & Anti-Replay Guard]
-    end
-
-    subgraph Async Processing Core
-        C[Celery Task Queue & Redis Broker]
-        M[3-Layer ML Name Matcher]
-        DB[(SQLAlchemy Relational Database)]
-    end
-
-    subgraph Analytics & Output Engine
-        R[ML Risk & Clustering Analytics]
-        P[ReportLab PDF Generator]
-        D[Interactive Dashboards & APIs]
-        E[SMTP Email Dispatcher]
-    end
-
-    Z -->|HTTPS Webhook| B
-    B -->|Verify Signature| V
-    V -->|Validated Payload| C
-    C -->|Process Session| M
-    M -->|Record Attendance| DB
-    DB --> R
-    DB --> P
-    R --> D
-    P --> E
+    Z[Zoom API / Webhook Event]:::external -->|HTTPS Payload| B[Flask Webhook Gateway]:::security
+    B -->|HMAC-SHA256 Verification| V[Anti-Replay Guard]:::security
+    V -->|Validated Payload| C[Celery Task Queue & Redis Broker]:::async
+    C --> M[3-Layer ML Name Matcher]:::async
+    M -->|Classified Record| DB[(SQLAlchemy Database)]:::async
+    DB --> R[ML Risk & Clustering Analytics]:::analytics
+    DB --> P[ReportLab PDF Generator]:::analytics
+    R --> D[Interactive Dashboard & REST APIs]:::analytics
+    P --> E[SMTP Mail Service]:::analytics
 ```
 
 ---
 
-## 🔬 ML & Analytics Engine
+## 🔬 ML & Matching Pipeline
 
-The core matching architecture resolves participant identity ambiguity using a 3-stage intelligence pipeline:
+Identity resolution follows a 3-tier cascade to eliminate manual name matching overhead:
 
-```mermaid
-flowchart LR
-    A[Zoom Display Name] --> B{Layer 1: Exact Match}
-    B -->|Match Found| Z[Confirmed Student ID]
-    B -->|No Match| C{Layer 2: Fuzzy Levenshtein}
-    C -->|High Confidence| Z
-    C -->|Ambiguous| D[Layer 3: RandomForest Model]
-    D -->|Inference Score ≥ Threshold| Z
-    D -->|Low Confidence| F[Manual Flag for Professor Review]
-    F -->|Professor Action| G[confirmed_pairs.jsonl]
-    G -->|Nightly Celery Beat| H[Model Retraining]
-```
+<table width="100%">
+  <tr>
+    <th width="25%">Layer 1: Exact Match</th>
+    <th width="25%">Layer 2: Fuzzy Distance</th>
+    <th width="25%">Layer 3: RandomForest</th>
+    <th width="25%">Active Feedback</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://img.shields.io/badge/Layer_1-O(1)_Lookup-10B981?style=for-the-badge"/><br/><br/>
+      Direct normalized string equivalence check.
+    </td>
+    <td align="center">
+      <img src="https://img.shields.io/badge/Layer_2-Levenshtein-06B6D4?style=for-the-badge"/><br/><br/>
+      Calculates string distance for minor typos.
+    </td>
+    <td align="center">
+      <img src="https://img.shields.io/badge/Layer_3-RandomForest-8B5CF6?style=for-the-badge"/><br/><br/>
+      Evaluates complex patterns (10k sample model).
+    </td>
+    <td align="center">
+      <img src="https://img.shields.io/badge/Feedback-Active_Learning-F59E0B?style=for-the-badge"/><br/><br/>
+      Nightly retraining via Celery Beat tasks.
+    </td>
+  </tr>
+</table>
 
-- **Active Learning Loop**: Every manual confirmation or rejection in the UI streams directly to local training datasets, allowing the RandomForest model to continually adapt to institution-specific naming conventions.
+<br/>
+
+> [!TIP]
+> **Human-in-the-Loop Feedback**: When a professor confirms or rejects a name suggestion in the UI, the result is saved to `app/ml/train_data/confirmed_pairs.jsonl`. The scheduled Celery Beat task automatically retrains the RandomForest model nightly.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack Matrix
 
-| Component | Technologies |
+| Domain | Integrated Technologies & Tooling |
 | :--- | :--- |
-| **Core Framework** | `Flask 3.x` • `Werkzeug` • `Flask-Login` • `Flask-Mail` |
-| **Machine Learning** | `Scikit-Learn (RandomForest)` • `NumPy` • `Pandas` |
-| **Task Queue & Broker**| `Celery` • `Celery Beat` • `Redis 7` |
-| **Database & ORM** | `SQLAlchemy` (6 Models) • `SQLite` / `PostgreSQL` |
-| **Reporting & Frontend**| `ReportLab (PDF)` • `Chart.js` • `Bootstrap 5` • `Jinja2` |
-| **DevOps & Testing** | `Docker` • `Docker Compose` • `Gunicorn` • `Pytest` |
+| **Backend Framework** | <img src="https://img.shields.io/badge/Flask-3.x-000000?style=flat-square&logo=flask&logoColor=white"/> <img src="https://img.shields.io/badge/Werkzeug-Bcrypt-000000?style=flat-square"/> <img src="https://img.shields.io/badge/Flask--Login-Auth-000000?style=flat-square"/> <img src="https://img.shields.io/badge/Flask--Mail-SMTP-000000?style=flat-square"/> |
+| **Machine Learning** | <img src="https://img.shields.io/badge/Scikit--Learn-RandomForest-F7931E?style=flat-square&logo=scikit-learn&logoColor=white"/> <img src="https://img.shields.io/badge/NumPy-Vectorized-013243?style=flat-square&logo=numpy&logoColor=white"/> <img src="https://img.shields.io/badge/Pandas-DataFrames-150458?style=flat-square&logo=pandas&logoColor=white"/> |
+| **Async & Infrastructure** | <img src="https://img.shields.io/badge/Celery-Task_Queue-37B24D?style=flat-square&logo=celery&logoColor=white"/> <img src="https://img.shields.io/badge/Celery_Beat-Scheduler-37B24D?style=flat-square"/> <img src="https://img.shields.io/badge/Redis-7.x_Broker-DC382D?style=flat-square&logo=redis&logoColor=white"/> |
+| **Database & ORM** | <img src="https://img.shields.io/badge/SQLAlchemy-6_Models-D7101C?style=flat-square&logo=sqlalchemy&logoColor=white"/> <img src="https://img.shields.io/badge/SQLite-Dev-003B57?style=flat-square&logo=sqlite&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-Production-4169E1?style=flat-square&logo=postgresql&logoColor=white"/> |
+| **Reporting & Frontend** | <img src="https://img.shields.io/badge/ReportLab-PDF_Engine-FF6C37?style=flat-square"/> <img src="https://img.shields.io/badge/Chart.js-REST_API-FF6384?style=flat-square&logo=chartdotjs&logoColor=white"/> <img src="https://img.shields.io/badge/Bootstrap-5.x-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/> |
+| **DevOps & Testing** | <img src="https://img.shields.io/badge/Docker-Containers-2496ED?style=flat-square&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/Docker_Compose-Orchestration-2496ED?style=flat-square"/> <img src="https://img.shields.io/badge/Pytest-Test_Suite-0A9EDC?style=flat-square&logo=pytest&logoColor=white"/> |
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start & Installation
 
-### 1. Clone & Environment Setup
+### 1. Repository Setup
 ```bash
 git clone https://github.com/vigneshaadepu/Zoom_attendance.git
 cd Zoom_attendance
 
-# Create and activate virtual environment
+# Initialize virtual environment
 python -m venv venv
 # Windows: venv\Scripts\activate | Unix: source venv/bin/activate
 
@@ -156,56 +183,59 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### 2. Database Initialization & ML Model Seeding
+### 2. Database & ML Initialization
 ```bash
 python seed_db.py
 ```
-> *Initializes all SQLAlchemy database tables, seeds a demonstration professor account (`dr.smith@university.edu` / `password123`), generates 30 student profiles across 5 sessions, trains the initial RandomForest ML model (`app/ml/name_matcher.pkl`), and calculates initial risk scores.*
+> [!NOTE]
+> `seed_db.py` creates database schema tables, inserts demo professor credentials (`dr.smith@university.edu` / `password123`), generates 30 student records across 5 sessions, trains the RandomForest model (`app/ml/name_matcher.pkl`), and calculates behavioral risk scores.
 
-### 3. Execution Modes
+### 3. Launch Application
 
 <details>
-<summary><b>🔹 Mode A: Development / Single-Threaded Mode</b></summary>
+<summary><b>🔥 Option A: Local Development Server</b></summary>
+<br/>
 
 ```bash
 python run.py
-# Access dashboard at http://localhost:5000
+# Access Web Dashboard at http://localhost:5000
 ```
 </details>
 
 <details>
-<summary><b>🔹 Mode B: Production Async Stack (Docker & Celery)</b></summary>
+<summary><b>🐳 Option B: Full Production Container Stack (Docker & Celery)</b></summary>
+<br/>
 
 ```bash
-# Launch Redis, Celery Worker, Celery Beat, and Flask Application
+# Spins up Redis broker, Celery worker, Celery Beat scheduler, and Gunicorn application
 docker-compose up --build
 ```
 </details>
 
 ---
 
-## 📹 Zoom Integration & Simulation
+## 📹 Zoom Integration & Webhook Simulation
 
-### Webhook Simulator (Offline Testing)
-Test the entire end-to-end pipeline without an active Zoom API connection:
+> [!TIP]
+> **No Zoom Account Required for Testing**: Use the included simulation utility `simulate_zoom.py` to trigger full meeting lifecycles offline.
 
 ```bash
-# Execute standard lifecycle simulation
+# Execute standard Zoom meeting simulation
 python simulate_zoom.py
 
-# Execute custom simulation with parameters
+# Execute custom simulation with specific meeting parameters
 python simulate_zoom.py --meeting-id 88001234567 --host dr.smith@university.edu --participants 15
 ```
-> *The simulator emits `meeting.started`, simulates joins with fuzzy name variations and re-joins, fires `participant_left`, and triggers `meeting.ended` to initiate automated PDF generation.*
 
 <details>
-<summary><b>🔧 Zoom Server-to-Server OAuth Credentials Configuration</b></summary>
+<summary><b>🔑 Production Zoom Server-to-Server OAuth Configuration</b></summary>
+<br/>
 
-1. Register a **Server-to-Server OAuth App** in the [Zoom Marketplace](https://marketplace.zoom.us/).
-2. Add required administrative scopes: `meeting:read:admin` and `report:read:admin`.
-3. Configure **Event Subscriptions** pointing to your endpoint (`https://<domain>/webhook/zoom`) for:
+1. Build a **Server-to-Server OAuth App** in the [Zoom Marketplace](https://marketplace.zoom.us/).
+2. Grant administrative scopes: `meeting:read:admin` and `report:read:admin`.
+3. Enable **Event Subscriptions** pointing to `https://<your-domain>/webhook/zoom` for:
    - `meeting.started`, `meeting.ended`, `meeting.participant_joined`, `meeting.participant_left`
-4. Set `.env` credentials:
+4. Configure `.env` keys:
    ```env
    ZOOM_ACCOUNT_ID=your_account_id
    ZOOM_CLIENT_ID=your_client_id
@@ -216,33 +246,39 @@ python simulate_zoom.py --meeting-id 88001234567 --host dr.smith@university.edu 
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## 🧪 Testing & Security Infrastructure
 
-Enforce software reliability across webhook verification, attendance accumulation, and ML matching:
-
-```bash
-# Run full test suite with Pytest
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🛡️ Security Protections</h3>
+      • <b>HMAC-SHA256</b> signature verification on all webhooks.<br/>
+      • <b>5-Minute Anti-Replay</b> window to prevent payload replay attacks.<br/>
+      • <b>Bcrypt Password Hashing</b> via Werkzeug.<br/>
+      • <b>SQLAlchemy Rollbacks</b> on exception state.
+    </td>
+    <td width="50%" valign="top">
+      <h3>🧪 Automated Testing</h3>
+      <pre><code># Run full pytest suite
 pytest tests/ -v
 
-# Run targeted test modules
+# Run targeted test suites
 pytest tests/test_matching.py -v
-pytest tests/test_attendance.py -v
 pytest tests/test_webhook.py -v
 
-# Generate HTML code coverage report
-pytest tests/ --cov=app --cov-report=html
-```
+# Code coverage report
+pytest tests/ --cov=app</code></pre>
+    </td>
+  </tr>
+</table>
 
----
-
-## 🔒 Security Infrastructure
-
-- **HMAC-SHA256 Validation**: Rejects unauthenticated payload tampering at the API gateway layer.
-- **Anti-Replay Defense**: Enforces strict 5-minute timestamp bounds to neutralize replay vulnerabilities.
-- **Credential Protection**: Uses Werkzeug bcrypt hashing for credential storage; environment secrets strictly isolated from source control.
-
----
+<br/>
 
 <div align="center">
-  <sub>Built with Flask 3.x, Scikit-Learn, Celery, Redis, ReportLab, and Bootstrap 5.</sub>
+
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e293b,100:0f172a&height=120&section=footer" width="100%"/>
+
+  <p><b>EduTrack Platform</b> • Designed for High-Performance Academic Intelligence</p>
+  <sub>Built with Flask 3.x, Scikit-Learn, Celery, Redis, ReportLab, and Bootstrap 5</sub>
+
 </div>
