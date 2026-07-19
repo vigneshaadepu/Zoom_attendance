@@ -1,8 +1,9 @@
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e293b,100:0f172a&height=200&section=header&text=🎓%20EduTrack&fontSize=48&fontColor=38bdf8&fontAlignY=38&desc=Enterprise-Grade%20Student%20Attendance%20Engine%20%26%20ML%20Analytics&descSize=18&descAlignY=62&descAlign=50" width="100%"/>
+  <h1>🎓 EduTrack</h1>
+  <p><b>Enterprise-Grade Student Attendance Engine & ML Analytics Platform</b></p>
 
-  <br/>
+  <p><i>Automated Zoom Webhooks • 3-Layer Machine Learning Matcher • Behavioral Risk Analytics • Automated PDF Reporting</i></p>
 
   <p>
     <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/></a>
@@ -14,7 +15,7 @@
   </p>
 
   <p>
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=17&pause=1000&color=38BDF8&center=true&vcenter=true&width=580&lines=Automated+Zoom+Server-to-Server+Webhooks;3-Layer+Machine+Learning+Name+Matcher;Active+Learning+%26+Automated+Nightly+Retraining;Real-time+Behavioral+Risk+%26+Attendance+Clustering" alt="Typing Banner" />
+    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=17&pause=1000&color=38BDF8&center=true&vcenter=true&width=650&lines=Automated+Zoom+Server-to-Server+Webhooks;3-Layer+Machine+Learning+Name+Matcher;Active+Learning+%26+Automated+Nightly+Retraining;Real-time+Behavioral+Risk+%26+Attendance+Clustering" alt="Typing SVG" /></a>
   </p>
 
   <br/>
@@ -276,9 +277,9 @@ pytest tests/ --cov=app</code></pre>
 
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e293b,100:0f172a&height=120&section=footer" width="100%"/>
+  <hr style="border: 1px solid #1e293b; width: 100%;"/>
 
-  <p><b>EduTrack Platform</b> • Designed for High-Performance Academic Intelligence</p>
-  <sub>Built with Flask 3.x, Scikit-Learn, Celery, Redis, ReportLab, and Bootstrap 5</sub>
+  <p><b>🎓 EduTrack Platform</b> • Enterprise Student Attendance Engine</p>
+  <p><sub>Built with Flask 3.x, Scikit-Learn, Celery, Redis, ReportLab, and Bootstrap 5</sub></p>
 
 </div>
